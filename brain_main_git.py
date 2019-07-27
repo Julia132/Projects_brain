@@ -69,9 +69,8 @@ def main():
                         perimeter = cv2.arcLength(contours[i], True)
                         circularity = 4 * pi * (area / (perimeter * perimeter))
                         solidity = float(area) / hull_area
-
-                    if 0.2 < circularity[0] < 1.2 and 0.1 < eccentricity[0] < 0.9 and solidity[0] > 0.7:
-                        cv2.drawContours(mask, contours, i, 255, -1)
+                        if 0.2 < circularity < 1.2 and 0.1 < eccentricity < 0.9 and solidity > 0.7:
+                            cv2.drawContours(mask, contours, i, 255, -1)
             if int(np.mean(mask)) >= 1:
                 _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
                 Max = 0
