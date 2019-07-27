@@ -18,7 +18,6 @@ def main():
     onlyfiles_out = [f for f in listdir(mypath_out) if isfile(join(mypath_out, f))]
     onlyfiles_no = [f for f in listdir(mypath_no) if isfile(join(mypath_no, f))]
     img = np.empty(len(onlyfiles), dtype=object)
-    a = 2+3
     for n in range(0, len(onlyfiles)):
         img[n] = cv2.imread(join(mypath_in, onlyfiles[n]))
         gray = cv2.cvtColor(img[n], cv2.COLOR_BGR2GRAY)
