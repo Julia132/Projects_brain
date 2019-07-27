@@ -46,7 +46,7 @@ with open('data_set_2.csv', 'w', newline='') as f:
         hull = []
         contours.sort(key=lambda contour: len(contour))
         i = len(contours) - 1
-        area = cv2.contourArea(contours[i])
+        area = cv2.contourArea(contours[i]) #выходит за границы массива?
         hull = cv2.convexHull(contours[i])
         hull_area = cv2.contourArea(hull)
 
