@@ -19,7 +19,6 @@ def main():
     onlyfiles_no = [f for f in listdir(mypath_no) if isfile(join(mypath_no, f))]
     img = np.empty(len(onlyfiles), dtype=object)
     a = 2+3
-    print("FFFFFF", a)
     for n in range(0, len(onlyfiles)):
         img[n] = cv2.imread(join(mypath_in, onlyfiles[n]))
         gray = cv2.cvtColor(img[n], cv2.COLOR_BGR2GRAY)
@@ -63,7 +62,6 @@ def main():
                 radius = int(radius)
                 if 300 < area < 10000 and 10 < radius < 100:
 
-                    def figure(area, contours):
                         ellipse = cv2.fitEllipse(contours[i])
                         (center, axes, orientation) = ellipse
                         majoraxis_length = max(axes)
@@ -72,12 +70,6 @@ def main():
                         perimeter = cv2.arcLength(contours[i], True)
                         circularity = 4 * pi * (area / (perimeter * perimeter))
                         solidity = float(area) / hull_area
-                        return solidity, circularity, eccentricity
-
-                    solidity = figure(area, contours)
-                    circularity = figure(area, contours)
-                    eccentricity = figure(area, contours)
-
 
                     if 0.2 < circularity[0] < 1.2 and 0.1 < eccentricity[0] < 0.9 and solidity[0] > 0.7:
                         cv2.drawContours(mask, contours, i, 255, -1)
@@ -93,14 +85,9 @@ def main():
                         pos = idx
                 Contour = np.array(contours[pos])
                 cv2.drawContours(mask2, [Contour], 0, 255, -1)
-
-                def blur(mask2):
-                    mask3 = cv2.medianBlur(mask2, 9)
-                    mask4 = cv2.medianBlur(mask3, 9)
-                    mask5 = cv2.medianBlur(mask4, 9)
-                    return mask5
-                mask5 = blur(mask2)
-
+                mask3 = cv2.medianBlur(mask2, 9)
+                mask4 = cv2.medianBlur(mask3, 9)
+                mask5 = cv2.medianBlur(mask4, 9)
                 cv2.imwrite(join(mypath_late, onlyfiles[n]), mask5)
             if int(np.mean(mask)) == 0:
                 cv2.imwrite(join(mypath_no, onlyfiles[n]), mask)
@@ -145,3 +132,4 @@ def main():
     print('binary accuracy value', Agv_accuracy)
     return contours
 contours = main()
+
