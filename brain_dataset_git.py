@@ -8,10 +8,10 @@ import math
 from scipy.stats import kurtosis
 from scipy.stats import skew
 
-mypath_in = 'C:/Users/inet/Desktop/part_start'
-mypath_out = 'C:/Users/inet/Desktop/part_finish'
-mypath_late = 'C:/Users/inet/Desktop/part_start_late'
-mypath_no = 'C:/Users/inet/Desktop/no pathologies'
+mypath_in = 'C:/Users/inet/Desktop/part_start'  #больные и здоровые в серых тонах
+mypath_out = 'C:/Users/inet/Desktop/part_finish'    #????!!!!!!
+mypath_late = 'C:/Users/inet/Desktop/part_start_late'   #результат обработки больных и здоровых вручную
+mypath_no = 'C:/Users/inet/Desktop/no pathologies'  #здоровые по мнению кода
 onlyfiles = [f for f in listdir(mypath_in) if isfile(join(mypath_in, f))]
 onlyfiles_out = [f for f in listdir(mypath_out) if isfile(join(mypath_out, f))]
 onlyfiles_no = [f for f in listdir(mypath_no) if isfile(join(mypath_no, f))]
