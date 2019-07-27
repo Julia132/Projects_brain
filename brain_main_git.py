@@ -60,7 +60,6 @@ def main():
                 _, radius = cv2.minEnclosingCircle(contours[i])
                 radius = int(radius)
                 if 300 < area < 10000 and 10 < radius < 100:
-
                         ellipse = cv2.fitEllipse(contours[i])
                         (center, axes, orientation) = ellipse
                         majoraxis_length = max(axes)
