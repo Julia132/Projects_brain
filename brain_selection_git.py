@@ -7,9 +7,9 @@ from sklearn.metrics import accuracy_score
 from imblearn.metrics import sensitivity_specificity_support
 
 def selection ():
-    mypath_out = 'C:/Users/inet/Desktop/part_finish_0'
-    mypath_no = 'C:/Users/inet/Desktop/no pathologies'
-    mypath_start_no = 'C:/Users/inet/Desktop/not'
+    mypath_out = 'C:/Users/inet/Desktop/part_finish_0'  #больные и здоровые в ручной обработке
+    mypath_no = 'C:/Users/inet/Desktop/no pathologies'  #здоровые по мнению кода
+    mypath_start_no = 'C:/Users/inet/Desktop/not'   #здоровые в серых тонах
 
     onlyfiles_out = [f for f in listdir(mypath_out) if isfile(join(mypath_out, f))]
     onlyfiles_no = [f for f in listdir(mypath_no) if isfile(join(mypath_no, f))]
