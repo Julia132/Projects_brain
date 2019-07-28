@@ -13,36 +13,27 @@ def main():
     mypath_in = 'C:/Users/inet/Desktop/part_start'  #больные и здоровые в серых тонах
     mypath_out = 'C:/Users/inet/Desktop/part_finish_0'    #результат обработки больных и здоровых вручную
     mypath_late = 'C:/Users/inet/Desktop/part_start_late'   #результат обработки больных и здоровых вручную
-    mypath_no = 'C:/Users/inet/Desktop/no pathologies'  #здоровые по мнению кода
+    mypath_no = 'C:/Users/inet/Desktop/no pathologies'  # здоровые по мнению кода
     onlyfiles = [f for f in listdir(mypath_in) if isfile(join(mypath_in, f))]
     onlyfiles_out = [f for f in listdir(mypath_out) if isfile(join(mypath_out, f))]
-    onlyfiles_no = [f for f in listdir(mypath_no) if isfile(join(mypath_no, f))]
     img = np.empty(len(onlyfiles), dtype=object)
     for n in range(0, len(onlyfiles)):
         img[n] = cv2.imread(join(mypath_in, onlyfiles[n]))
         gray = cv2.cvtColor(img[n], cv2.COLOR_BGR2GRAY)
 
-        def standardized(gray):
-            newImg = cv2.resize(gray, (512, 512))
-            R = np.mean(newImg)
-            std = np.std(newImg)
-            standardized_images_out = ((newImg - R) / std) * 40 + 127
-            blur = cv2.blur(standardized_images_out, (7, 7))
-            return blur
+        newImg = cv2.resize(gray, (512, 512))
+        R = np.mean(newImg)
+        std = np.std(newImg)
+        standardized_images_out = ((newImg - R) / std) * 40 + 127
+        blur = cv2.blur(standardized_images_out, (7, 7))
 
-        blur = standardized(gray)
-
-        def morph(blur):
-            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (1, 1))
-            opening = cv2.morphologyEx(blur, cv2.MORPH_OPEN, kernel, 1)
-            thresh = cv2.adaptiveThreshold(opening.astype(np.uint8), 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 0)
-            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (4, 4))
-            dilation = cv2.dilate(thresh, kernel, 1)
-            erode = cv2.erode(dilation, kernel, 3)
-            closing = cv2.morphologyEx(erode, cv2.MORPH_CLOSE, kernel, 5)
-            return closing
-
-        closing = morph(blur)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (1, 1))
+        opening = cv2.morphologyEx(blur, cv2.MORPH_OPEN, kernel, 1)
+        thresh = cv2.adaptiveThreshold(opening.astype(np.uint8), 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 0)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (4, 4))
+        dilation = cv2.dilate(thresh, kernel, 1)
+        erode = cv2.erode(dilation, kernel, 3)
+        closing = cv2.morphologyEx(erode, cv2.MORPH_CLOSE, kernel, 5)
 
         _, contours, hierarchy = cv2.findContours(closing, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         drawing = np.zeros(closing.shape, np.uint8)
@@ -97,7 +88,6 @@ def main():
     start_img = np.empty(len(onlyfiles_out), dtype=object)
     final_img = np.empty(len(onlyfiles_out), dtype=object)
     onlyfiles_late = [f for f in listdir(mypath_late) if isfile(join(mypath_late, f))]
-    onlyfile_out = [f for f in listdir(mypath_out) if isfile(join(mypath_out, f))]
     for n in range(0, len(onlyfiles_late)):
         start_img[n] = cv2.imread(join(mypath_late, onlyfiles_late[n]), cv2.IMREAD_GRAYSCALE) #ошибка в количестве файлов
         final_img[n] = cv2.imread(join(mypath_out, onlyfiles_late[n]), cv2.IMREAD_GRAYSCALE)
