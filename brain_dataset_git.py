@@ -9,13 +9,11 @@ from scipy.stats import kurtosis
 from scipy.stats import skew
 
 mypath_in = 'C:/Users/inet/Desktop/part_start'  #больные и здоровые в серых тонах
-mypath_out = 'C:/Users/inet/Desktop/part_finish'    #????!!!!!!
-mypath_late = 'C:/Users/inet/Desktop/part_start_late'   #результат обработки больных и здоровых вручную
+mypath_out = 'C:/Users/inet/Desktop/part_finish'    #200 здоровых в ручной обработке
 mypath_no = 'C:/Users/inet/Desktop/no pathologies'  #здоровые по мнению кода
 onlyfiles = [f for f in listdir(mypath_in) if isfile(join(mypath_in, f))]
 onlyfiles_out = [f for f in listdir(mypath_out) if isfile(join(mypath_out, f))]
-onlyfiles_no = [f for f in listdir(mypath_no) if isfile(join(mypath_no, f))]
-img = np.empty(len(onlyfiles), dtype=object)
+img = np.empty(len(onlyfiles_out), dtype=object)
 
 with open('data_set_2.csv', 'w', newline='') as f:
     wr = csv.writer(f, delimiter=',', quotechar=',',
@@ -44,6 +42,7 @@ with open('data_set_2.csv', 'w', newline='') as f:
         contours_cirles = []
 
         hull = []
+        area = []
         contours.sort(key=lambda contour: len(contour))
         i = len(contours) - 1
         area = cv2.contourArea(contours[i]) #выходит за границы массива?
