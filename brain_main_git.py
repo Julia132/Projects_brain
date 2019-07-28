@@ -79,6 +79,7 @@ def main():
                 cv2.imwrite(join(mypath_late, onlyfiles[n]), mask5)
             if int(np.mean(mask)) == 0:
                 cv2.imwrite(join(mypath_no, onlyfiles[n]), mask)
+            return contours
         selection(contours)
     list_precision = []
     list_recall = []
