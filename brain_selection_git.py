@@ -6,7 +6,7 @@ from sklearn.metrics import precision_recall_fscore_support   # для выво�
 from sklearn.metrics import accuracy_score
 from imblearn.metrics import sensitivity_specificity_support
 
-def selection ():
+def selection():
     mypath_out = 'C:/Users/inet/Desktop/part_finish_0'  #больные и здоровые в ручной обработке
     mypath_no = 'C:/Users/inet/Desktop/no pathologies'  #здоровые по мнению кода
     mypath_start_no = 'C:/Users/inet/Desktop/not'   #здоровые в серых тонах
@@ -49,3 +49,5 @@ def selection ():
     print('weighted accuracy value', Agv_accuracy)
     return Agv_accuracy, Avg_precision, Avg_recall, Avg_fscore, Avg_specificity
 Agv_accuracy = selection()
+if __name__=="__main__":
+    selection()
