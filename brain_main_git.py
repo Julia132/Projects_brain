@@ -61,6 +61,8 @@ def main():
                         solidity = float(area) / hull_area
                         if 0.2 < circularity < 1.2 and 0.1 < eccentricity < 0.9 and solidity > 0.7:
                             cv2.drawContours(mask, contours, i, 255, -1)
+            if int(np.mean(mask)) == 0:
+                cv2.imwrite(join(mypath_no, onlyfiles[n]), mask)
             if int(np.mean(mask)) >= 1:
                 _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
                 Max = 0
@@ -77,10 +79,8 @@ def main():
                 mask4 = cv2.medianBlur(mask3, 9)
                 mask5 = cv2.medianBlur(mask4, 9)
                 cv2.imwrite(join(mypath_late, onlyfiles[n]), mask5)
-            if int(np.mean(mask)) == 0:
-                cv2.imwrite(join(mypath_no, onlyfiles[n]), mask)
-            return contours
-        selection(contours)
+            return mask5
+    mask5 = selection(contours)
     list_precision = []
     list_recall = []
     list_fscore = []
@@ -118,6 +118,7 @@ def main():
     print('binary fscore value', Avg_fscore)
     print('binary specificity value', Avg_specificity)
     print('binary accuracy value', Agv_accuracy)
-    return contours
-contours = main()
-
+    return mask5
+mask5 = main()
+if __name__=="__main__":
+    main()
