@@ -6,7 +6,6 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_recall_fscore_support
@@ -14,12 +13,14 @@ from sklearn.metrics import classification_report
 from imblearn.metrics import sensitivity_specificity_support
 
 def csv_model():
-    dataset = pd.read_csv("C:/Users/inet/PycharmProjects/untitled3/venv/data_set_2.csv", sep=',', encoding='latin1',
+    dataset = pd.read_csv("C:/Users/inet/Documents/GitHub/Projects_brain/data_set_2.csv", sep=',', encoding='latin1',
                           dayfirst=True,
                           index_col=None)
 
-    y = [1] * 98 + [0] * 100
+    y = [1] * 59 + [0] * 58
+
     X_train, X_test, y_train, y_test = train_test_split(dataset, y, test_size=0.3, random_state=0)
+
     print("Оригинальные размеры данных: ", X_train.shape, X_test.shape)
 
     sc = StandardScaler(copy=True, with_mean=True, with_std=True)
@@ -64,6 +65,7 @@ def csv_model():
     y.to_csv('out.csv', index=False, header=False)
     return y
 y = csv_model()
-
+if __name__=="__main__":
+    csv_model()
 
 
