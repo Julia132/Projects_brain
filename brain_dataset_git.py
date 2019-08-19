@@ -40,16 +40,11 @@ def dataset():
                     print("WARNING! len(contours) == ", len(contours))
                     for contour in contours:
                         print(len(contour))
-                hull = []
                 contours.sort(key=lambda contour: len(contour), reverse=True)
-
-                i = len(contours)-1
-                #contours.sort(key=cv2.contourArea, reverse=True)
-                #area = max(contours[i], key=cv2.contourArea)
-                area = cv2.contourArea(contours[i])#выходит за границы массива?
-                #area = ((cv2.contourArea(contour), contour) for i in contours)
-
-
+                if len(contours) == 0:
+                    continue
+                i = 0
+                area = cv2.contourArea(contours[i])
                 hull = cv2.convexHull(contours[i])
                 hull_area = cv2.contourArea(hull)
 
@@ -83,5 +78,7 @@ def dataset():
                 data_model = parametr_s, parametr_e, parametr_c, hull_area, area, perimeter, square, rh, x, y
                 print(data_model)
     return data_model
+
+
 if __name__=="__main__":
     dataset()
