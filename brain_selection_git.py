@@ -48,6 +48,8 @@ def selection():
     print('weighted specificity value', Avg_specificity)
     print('weighted accuracy value', Agv_accuracy)
     return Agv_accuracy, Avg_precision, Avg_recall, Avg_fscore, Avg_specificity
-Agv_accuracy = selection()
+# Agv_accuracy = selection()
+
+
 if __name__=="__main__":
     selection()
