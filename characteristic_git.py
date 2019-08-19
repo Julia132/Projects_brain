@@ -1,7 +1,9 @@
 import cv2  # графический модуль opencv
 import numpy as np  # модуль операций над матрицами
-from brain_main_git import mask5
-from math import pi  # для константы pi
+
+#пока этот модуль не особо нужен
+
+#from brain_main_git import mask5
 def characteristic(mask5):
     image = mask5
     image = cv2.resize(image, (512, 512))
