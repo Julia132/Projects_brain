@@ -8,7 +8,7 @@ class NeuralNetwork():
                                       dayfirst=True,
                                       index_col=None, header=None)
     def __init__(self):
-        self.synaptic_weights = np.zeros(self.training_set_inputs.shape)
+        self.synaptic_weights = self.training_set_inputs
     def __sigmoid(self, x):
         return 1 / (1 + exp(-x))
 
@@ -22,6 +22,7 @@ class NeuralNetwork():
             self.synaptic_weights += adjustment
 
     def think(self, inputs):
+
         return self.__sigmoid(dot(inputs, self.synaptic_weights))
 if __name__ == "__main__":
     neural_network = NeuralNetwork()
