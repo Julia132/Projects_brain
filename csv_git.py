@@ -15,9 +15,9 @@ from imblearn.metrics import sensitivity_specificity_support
 def csv_model():
     dataset = pd.read_csv("C:/Users/inet/Documents/GitHub/Projects_brain/data_set_2.csv", sep=',', encoding='latin1',
                           dayfirst=True,
-                          index_col=None)
+                          index_col=None, header=None)
 
-    y = [1] * 59 + [0] * 58
+    y = [1] * 98 + [0] * 98
 
     X_train, X_test, y_train, y_test = train_test_split(dataset, y, test_size=0.3, random_state=0)
 
@@ -28,7 +28,7 @@ def csv_model():
     X_train = sc.fit_transform(X_train.astype(float))
     X_test = sc.transform(X_test.astype(float))
 
-    classifier = RandomForestClassifier(n_estimators=100, criterion='gini', random_state=0, max_depth=10,
+    classifier = RandomForestClassifier(n_estimators=196, criterion='gini', random_state=0, max_depth=10,
                                         min_samples_split=14, max_features=6, )
     classifier.fit(X_train, y_train)
     importances = classifier.feature_importances_
@@ -63,8 +63,8 @@ def csv_model():
     print('binary specificity value', specificity[0])
     y = pd.DataFrame(y_pred)
     y.to_csv('out.csv', index=False, header=False)
-    return y
-y = csv_model()
+
+
 if __name__=="__main__":
     csv_model()
 
