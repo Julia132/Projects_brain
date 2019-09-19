@@ -36,7 +36,7 @@ for imagePath in imagePaths:
     # cv2.waitKey(0)
     # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = image / 255.
-    image = cv2.resize(image, (64, 64))
+    image = cv2.resize(image, (72, 72))
     data.append(image)
     # извлекаем метку класса из пути к изображению и обновляем
     # список меток
@@ -62,7 +62,7 @@ trainX, testX, trainY, testY = train_test_split(data, y, test_size=0.25, random_
 model = keras.models.Sequential()
 
 # 1st Convolutional Layer
-model.add(Conv2D(32, (3, 3),  padding='same', input_shape=(64, 64, 1)))
+model.add(Conv2D(32, (3, 3),  padding='same', input_shape=(72, 72, 1)))
 model.add(Activation('relu'))
 # Max Pooling
 model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
@@ -115,7 +115,7 @@ model.summary()
 INIT_LR = 0.01
 opt = SGD(lr=INIT_LR)
 model.compile(loss=keras.losses.binary_crossentropy, optimizer=opt, metrics=['accuracy'])
-EPOCHS = 125
+EPOCHS = 120
 
 trainX = np.expand_dims(np.array(trainX), axis=3)
 # trainY = np.expand_dims(np.array(trainY), axis=3)
