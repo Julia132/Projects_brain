@@ -83,6 +83,8 @@ def main():
         erode = cv2.erode(dilation, kernel, 3)
         closing = cv2.morphologyEx(erode, cv2.MORPH_CLOSE, kernel, 5)
 
+
+
         _, contours, hierarchy = cv2.findContours(closing, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         # drawing = np.zeros(closing.shape, np.uint8)
         selection(contours, onlyfiles[n], closing.shape, mypath_late, mypath_no)
@@ -110,7 +112,7 @@ def main():
         list_precision.append(precision)
         list_recall.append(recall)
         list_fscore.append(fscore)
-        list_specificity.append(specificity[0])
+        list_specificity.append(specificity[1])
         list_accuracy.append(accuracy)
 
     Avg_precision = np.mean(list_precision)

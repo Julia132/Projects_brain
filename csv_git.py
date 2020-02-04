@@ -13,11 +13,11 @@ from sklearn.metrics import classification_report
 from imblearn.metrics import sensitivity_specificity_support
 
 def csv_model():
-    dataset = pd.read_csv("C:/Users/inet/Documents/GitHub/Projects_brain/data_set_2.csv", sep=',', encoding='latin1',
+    dataset = pd.read_csv("C:/Users/inet/Documents/GitHub/Projects_brain/data_set_new.csv", sep=',', encoding='latin1',
                           dayfirst=True,
                           index_col=None, header=None)
 
-    y = [1] * 98 + [0] * 98
+    y = [1] * 96 + [0] * 96
 
     X_train, X_test, y_train, y_test = train_test_split(dataset, y, test_size=0.3, random_state=0)
 
@@ -34,6 +34,7 @@ def csv_model():
     importances = classifier.feature_importances_
     std = np.std([tree.feature_importances_ for tree in classifier.estimators_],
                  axis=0)
+    np.std()
     indices = np.argsort(importances)[::-1]
 
     print("Feature ranking:")

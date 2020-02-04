@@ -13,9 +13,11 @@ import random
 from sklearn.metrics import precision_recall_fscore_support
 from imblearn.metrics import sensitivity_specificity_support
 import cv2
+from sklearn import metrics
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
 import os
-EMBED_DIM = 100
-np.random.seed(1000)
+
 
 data = []
 labels = []
@@ -36,7 +38,7 @@ for imagePath in imagePaths:
     # cv2.waitKey(0)
     # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = image / 255.
-    image = cv2.resize(image, (72, 72))
+    image = cv2.resize(image, (84, 84)) #было 72*72
     data.append(image)
     # извлекаем метку класса из пути к изображению и обновляем
     # список меток
@@ -53,7 +55,7 @@ for y in ys:
 
 #labels = np.array(labels, dtype="float") / 255.
 # np.moveaxis(labels,1,-1)
-y = [1] * 98 + [0] * 102
+y = [1] * 98 + [0] * 98
 trainX, testX, trainY, testY = train_test_split(data, y, test_size=0.25, random_state=100)
 # lb = LabelBinarizer()
 # trainY = lb.fit_transform(trainY)
@@ -62,27 +64,30 @@ trainX, testX, trainY, testY = train_test_split(data, y, test_size=0.25, random_
 model = keras.models.Sequential()
 
 # 1st Convolutional Layer
-model.add(Conv2D(32, (3, 3),  padding='same', input_shape=(72, 72, 1)))
+model.add(Conv2D(32, (3, 3),  padding='same', input_shape=(84, 84, 1)))     #было 32
 model.add(Activation('relu'))
 # Max Pooling
 model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
 
+
 # 2nd Convolutional Layer
-model.add(Conv2D(filters=256, kernel_size=(11,11), strides=(1,1), padding='same'))
+model.add(Conv2D(filters=256, kernel_size=(9,9), strides=(1,1), padding='same')) #было 256,  kernel_size=(11,11)
 model.add(Activation('relu'))
 # Max Pooling
 model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
 
 # 3rd Convolutional Layer
-model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))
+model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))    #было 384
 model.add(Activation('relu'))
 
 # 4th Convolutional Layer
-model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))
+model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))    #было 384
 model.add(Activation('relu'))
 
+#вот тут можно потестить кол-во слоев, я бы добавла 1-2 штуки
+
 # 5th Convolutional Layer
-model.add(Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), padding='same'))
+model.add(Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), padding='same'))    #было 256
 model.add(Activation('relu'))
 # Max Pooling
 model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
@@ -90,24 +95,24 @@ model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
 # Passing it to a Fully Connected layer
 model.add(Flatten())
 # 1st Fully Connected Layer
-model.add(Dense(4096, input_shape=(4096,)))
+model.add(Dense(4096, input_shape=(4096,)))     #плотный слой, было 4096
 model.add(Activation('relu'))
 # Add Dropout to prevent overfitting
 model.add(Dropout(0.4))
 
 # 2nd Fully Connected Layer
-model.add(Dense(4096))
+model.add(Dense(4096))      #плотный слой, было 4096
 model.add(Activation('relu'))
 # Add Dropout
 model.add(Dropout(0.4))
 
 # 3rd Fully Connected Layer
-model.add(Dense(100))
+model.add(Dense(100))       #плотный слой, было 100
 model.add(Activation('relu'))
 # Add Dropout
 model.add(Dropout(0.4))
 # Output Layer
-model.add(Dense(17))
+model.add(Dense(17))   #можно поменять вот тут число вверх, было 17, плотный слой
 model.add(Activation('relu'))
 model.add(Dense(1, activation='sigmoid'))
 model.summary()
@@ -118,9 +123,8 @@ model.compile(loss=keras.losses.binary_crossentropy, optimizer=opt, metrics=['ac
 EPOCHS = 120
 
 trainX = np.expand_dims(np.array(trainX), axis=3)
-# trainY = np.expand_dims(np.array(trainY), axis=3)
 testX = np.expand_dims(np.array(testX), axis=3)
-# testY = np.expand_dims(np.array(testY), axis=3)
+
 
 H = model.fit(trainX, trainY, validation_data=(testX, testY), epochs=EPOCHS, batch_size=32, verbose=2)
 print("[INFO] evaluating network...")
@@ -140,21 +144,56 @@ print('binary fscore value', fscore[0])
 print('binary specificity value', specificity[0])
 #print(confusion_matrix(testY.round(), predictions))
 #print(classification_report(testY, predictions))
-
+dashList = [(5,2),(4,10),(3,3,2,2),(5,2,20,2)]
 # строим графики потерь и точности
 N = np.arange(0, EPOCHS)
 plt.style.use("ggplot")
 plt.figure()
-plt.plot(N, H.history["loss"], label="train_loss")
-plt.plot(N, H.history["val_loss"], label="val_loss")
-plt.plot(N, H.history["acc"], label="train_acc")
-plt.plot(N, H.history["val_acc"], label="val_acc")
+plt.plot(N, H.history["loss"], label="train_loss", linestyle='--')
+plt.plot(N, H.history["val_loss"], label="val_loss", linestyle='-.')
+plt.plot(N, H.history["acc"], label="train_acc", linestyle= ':')
+plt.plot(N, H.history["val_acc"], label="val_acc",  linestyle='-')
 plt.title("Training Loss and Accuracy (Simple NN)")
 plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuracy")
 plt.legend()
+plt.savefig("Training Loss and Accuracy.pdf")
 plt.show()
-cv2.waitKey()
-cv2.destroyAllWindows()
 
 
+plt.figure(figsize=(8, 6))
+fpr, tpr, thresholds = roc_curve(testY, predictions)
+roc_auc = auc(fpr, tpr)
+plt.plot(fpr, tpr, label='%s ROC (area = %0.2f)' % ('AlexNet', roc_auc))
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.0])
+plt.xlabel('Correctly defined neoplasms')
+plt.ylabel('Fallaciously defined neoplasms')
+plt.legend(loc=0, fontsize='small')
+plt.title("ROC - curve")
+plt.show()
+
+plt.figure(figsize=(8, 8))
+recall = metrics.recall_score(testY, predictions, average=None)
+specificity = recall[0]
+precision, recall, thresholds = metrics.precision_recall_curve(testY, predictions)
+plt.plot(recall, precision)
+plt.ylabel("Precision")
+plt.xlabel("Recall")
+plt.title("Curve dependent Precision и Recall of threshold")
+plt.legend(loc='best')
+plt.show()
+
+x, y = [], []
+
+for threshold in np.arange(0.0, 1.0, 0.01).tolist():
+    y_pred = np.where(predictions >= threshold, 1, 0)
+    recall = metrics.recall_score(testY, y_pred, average=None)
+    x.append(recall[0])
+    y.append(recall[1])
+plt.figure()
+plt.plot(x, y)
+plt.xlabel("Correctly defined with neoplasms")
+plt.ylabel("Correctly defined without neoplasms")
+plt.show()

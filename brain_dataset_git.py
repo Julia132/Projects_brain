@@ -12,22 +12,24 @@ def dataset():
     mypath_in = 'C:/Users/inet/Desktop/part_start'  #больные и здоровые в серых тонах
     mypath_out = 'C:/Users/inet/Desktop/part_finish'    #200 здоровых в ручной обработке
     mypath_no = 'C:/Users/inet/Desktop/no pathologies'  #здоровые по мнению кода
+    mypath_contour = 'C:/Users/inet/Desktop/contour'
+    mypath_late = 'C:/Users/inet/Desktop/part_start_late'  # результат обработки больных и здоровых вручную
     onlyfiles = [f for f in listdir(mypath_in) if isfile(join(mypath_in, f))]
-    onlyfiles_out = [f for f in listdir(mypath_out) if isfile(join(mypath_out, f))]
+    onlyfiles_out = [f for f in listdir(mypath_late) if isfile(join(mypath_late, f))]
     img = np.empty(len(onlyfiles_out), dtype=object)
 
-    with open('data_set_2.csv', 'w', newline='') as f:
+    with open('data_set_new.csv', 'w', newline='') as f:
             wr = csv.writer(f, delimiter=',', quotechar=',',
                         quoting=csv.QUOTE_MINIMAL)
-            for n in range(0, len(onlyfiles_out)):
+            for n in range(0, len(onlyfiles)):
 
-                img[n] = cv2.imread(join(mypath_in, onlyfiles_out[n]))
+                img[n] = cv2.imread(join(mypath_in, onlyfiles[n]))
                 gray = cv2.cvtColor(img[n], cv2.COLOR_BGR2GRAY)
                 newImg = cv2.resize(gray, (512, 512))
                 R = np.mean(newImg)
                 std = np.std(newImg)
 
-                img[n] = cv2.imread(join(mypath_out, onlyfiles_out[n]))
+                img[n] = cv2.imread(join(mypath_late, onlyfiles[n]))
                 gray = cv2.cvtColor(img[n], cv2.COLOR_BGR2GRAY)
 
                 closing = cv2.resize(gray, (512, 512))
@@ -75,7 +77,7 @@ def dataset():
 
                     wr.writerows([(parametr_s, parametr_e, parametr_c, hull_area, area, perimeter, square,
                                rh, x, y, R, std)])
-                data_model = parametr_s, parametr_e, parametr_c, hull_area, area, perimeter, square, rh, x, y
+                data_model = parametr_s, parametr_e, parametr_c, hull_area, area, perimeter, square, rh, x, y, R, std
                 print(data_model)
     return data_model
 
