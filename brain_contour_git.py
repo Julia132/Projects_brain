@@ -1,14 +1,17 @@
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
-from os import listdir  # список файлов в папке
-from os.path import isfile, join  # методы проверки файла и соединения с файлом
 
-def contour ():
-    mypath_late = 'C:/Users/inet/Desktop/part_start'
-    mypath_contour = 'C:/Users/inet/Desktop/contour'
-    mypath_contour_final = 'C:/Users/inet/Desktop/contour_final'
-    mypath_out = 'C:/Users/inet/Desktop/part_finish'
+from os import listdir
+from os.path import isfile, join
+
+
+def contour():
+
+
+    mypath_late = 'part_start'
+    mypath_contour = 'contour'
+    mypath_out = 'part_finish'
+
     onlyfiles_no = [f for f in listdir(mypath_late) if isfile(join(mypath_late, f))]
     onlyfiles_out = [f for f in listdir(mypath_out) if isfile(join(mypath_out, f))]
     img = np.empty(len(onlyfiles_no), dtype=object)
@@ -22,4 +25,6 @@ def contour ():
         edges = cv2.Canny(img[n], 0, 255)
         cv2.imwrite(join(mypath_contour, onlyfiles_no[n]), edges)
     return edges
-edges = contour ()
+
+
+edges = contour()
