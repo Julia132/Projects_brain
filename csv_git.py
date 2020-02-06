@@ -1,19 +1,24 @@
 import pandas as pd
 import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn import preprocessing
-from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import precision_recall_fscore_support
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, precision_recall_fscore_support, \
+    accuracy_score, confusion_matrix
 from imblearn.metrics import sensitivity_specificity_support
 
+
 def csv_model():
-    dataset = pd.read_csv("C:/Users/inet/Documents/GitHub/Projects_brain/data_set_new.csv", sep=',', encoding='latin1',
+
+    """""
+
+    This function classification geometric features from .csv, analysis of job program
+
+    """""
+
+    dataset = pd.read_csv("data_set_geometric_features.csv", sep=',', encoding='latin1',
                           dayfirst=True,
                           index_col=None, header=None)
 
@@ -21,7 +26,7 @@ def csv_model():
 
     X_train, X_test, y_train, y_test = train_test_split(dataset, y, test_size=0.3, random_state=0)
 
-    print("Оригинальные размеры данных: ", X_train.shape, X_test.shape)
+    print("Original data_set sizes: ", X_train.shape, X_test.shape)
 
     sc = StandardScaler(copy=True, with_mean=True, with_std=True)
 
@@ -34,7 +39,7 @@ def csv_model():
     importances = classifier.feature_importances_
     std = np.std([tree.feature_importances_ for tree in classifier.estimators_],
                  axis=0)
-    np.std()
+
     indices = np.argsort(importances)[::-1]
 
     print("Feature ranking:")
@@ -48,22 +53,23 @@ def csv_model():
            color="r", yerr=std[indices], align="center")
     plt.xticks(range(dataset.shape[1]), indices)
     plt.xlim([-1, dataset.shape[1]])
-    plt.show()
+
 
     y_pred = classifier.predict(X_test)
-    matrix_metrics = classification_report(y_test, y_pred)
-    print(matrix_metrics)
+    print(classification_report(y_test, y_pred))
+    print(confusion_matrix(y_test, y_pred))
 
     precision, recall, fscore, support = precision_recall_fscore_support(y_test, y_pred)
     _, specificity, _ = sensitivity_specificity_support(y_test, y_pred)
 
-    print('Accuracy',  accuracy_score(y_test, y_pred))
-    print('binary precision value', precision[0])
-    print('binary recall value', recall[0])
-    print('binary fscore value', fscore[0])
-    print('binary specificity value', specificity[0])
-    y = pd.DataFrame(y_pred)
-    y.to_csv('out.csv', index=False, header=False)
+    print('Accuracy: ',  accuracy_score(y_test, y_pred))
+    print('Precision value: ', precision[0])
+    print('Recall value: ', recall[0])
+    print('F-score value: ', fscore[0])
+    print('Specificity value: ', specificity[0])
+
+    result = pd.DataFrame(y_pred)
+    result.to_csv('result_RandomForest.csv', index=False, header=False)
 
 
 if __name__=="__main__":
