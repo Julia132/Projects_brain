@@ -12,6 +12,7 @@ dataset()
 from csv_git import csv_model
 csv_model()
 ```
+
 ## Image example before/after multi-stage processing
 #### before
 ![МОЗГИИИ](https://sun9-11.userapi.com/c204620/v204620695/5b6c0/AY-URd8OejM.jpg)
