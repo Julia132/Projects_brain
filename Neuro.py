@@ -1,47 +1,39 @@
 import keras
-from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+import random
+
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
-from sklearn.preprocessing import LabelBinarizer
+#from sklearn.preprocessing import LabelBinarizer, StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from keras.layers.core import Dense
 from keras.optimizers import SGD
 from imutils import paths
-import matplotlib.pyplot as plt
-import numpy as np
-import random
-from sklearn.metrics import precision_recall_fscore_support
+from sklearn.metrics import precision_recall_fscore_support, roc_curve, auc, \
+    classification_report, confusion_matrix, accuracy_score
 from imblearn.metrics import sensitivity_specificity_support
-import cv2
 from sklearn import metrics
-import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve, auc
-import os
 
 
 data = []
 labels = []
 
-# берём пути к изображениям и рандомно перемешиваем
-imagePaths = sorted(list(paths.list_images("C:/Users/inet/Desktop/part_start")))
-ys = sorted(list(paths.list_images("C:/Users/inet/Desktop/part_finish_0")))
-random.seed(200)
+imagePaths = sorted(list(paths.list_images("part_start")))
+ys = sorted(list(paths.list_images("part_finish_0")))
+random.seed(100)
 # random.shuffle(imagePaths)
 
-# цикл по изображениям
+
 for imagePath in imagePaths:
-    # загружаем изображение, меняем размер на 32x32 пикселей (без учёта
-    # соотношения сторон), сглаживаем его в 32x32x3=3072 пикселей и
-    # добавляем в список
     image = cv2.imread(imagePath, cv2.IMREAD_GRAYSCALE)
     # cv2.imshow("Image", image)
     # cv2.waitKey(0)
     # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = image / 255.
-    image = cv2.resize(image, (84, 84)) #было 72*72
+    image = cv2.resize(image, (84, 84))
     data.append(image)
-    # извлекаем метку класса из пути к изображению и обновляем
-    # список меток
+
 for y in ys:
     image_y = cv2.imread(y, cv2.IMREAD_GRAYSCALE)
     # cv2.imshow("Image", image_y)
@@ -50,6 +42,7 @@ for y in ys:
     image_y = image_y / 255.
     image_y = cv2.resize(image_y, (128, 128))
     labels.append(image_y)
+
 #data = np.array(data, dtype="float") / 255.
 # np.moveaxis(data,1,-1)
 
@@ -66,56 +59,63 @@ model = keras.models.Sequential()
 # 1st Convolutional Layer
 model.add(Conv2D(32, (3, 3),  padding='same', input_shape=(84, 84, 1)))     #было 32
 model.add(Activation('relu'))
+
 # Max Pooling
-model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='valid'))
 
 
 # 2nd Convolutional Layer
-model.add(Conv2D(filters=256, kernel_size=(9,9), strides=(1,1), padding='same')) #было 256,  kernel_size=(11,11)
+model.add(Conv2D(filters=256, kernel_size=(9, 9), strides=(1, 1), padding='same')) #было 256,  kernel_size=(11,11)
 model.add(Activation('relu'))
+
 # Max Pooling
-model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='valid'))
 
 # 3rd Convolutional Layer
-model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))    #было 384
+model.add(Conv2D(filters=384, kernel_size=(3, 3), strides=(1, 1), padding='same'))    #было 384
 model.add(Activation('relu'))
 
 # 4th Convolutional Layer
-model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))    #было 384
+model.add(Conv2D(filters=384, kernel_size=(3, 3), strides=(1, 1), padding='same'))    #было 384
 model.add(Activation('relu'))
-
-#вот тут можно потестить кол-во слоев, я бы добавла 1-2 штуки
 
 # 5th Convolutional Layer
-model.add(Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), padding='same'))    #было 256
+model.add(Conv2D(filters=256, kernel_size=(3, 3), strides=(1, 1), padding='same'))    #было 256
 model.add(Activation('relu'))
+
 # Max Pooling
-model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
+model.add(MaxPooling2D(pool_size=(2,  2), strides=(2, 2), padding='valid'))
 
 # Passing it to a Fully Connected layer
 model.add(Flatten())
+
 # 1st Fully Connected Layer
-model.add(Dense(4096, input_shape=(4096,)))     #плотный слой, было 4096
+model.add(Dense(4096, input_shape=(4096,)))
 model.add(Activation('relu'))
+
 # Add Dropout to prevent overfitting
 model.add(Dropout(0.4))
 
 # 2nd Fully Connected Layer
-model.add(Dense(4096))      #плотный слой, было 4096
+model.add(Dense(4096))
 model.add(Activation('relu'))
+
 # Add Dropout
 model.add(Dropout(0.4))
 
 # 3rd Fully Connected Layer
-model.add(Dense(100))       #плотный слой, было 100
+model.add(Dense(100))
 model.add(Activation('relu'))
+
 # Add Dropout
 model.add(Dropout(0.4))
+
 # Output Layer
-model.add(Dense(17))   #можно поменять вот тут число вверх, было 17, плотный слой
+model.add(Dense(17))
 model.add(Activation('relu'))
 model.add(Dense(1, activation='sigmoid'))
 model.summary()
+
 # Compile the model
 INIT_LR = 0.01
 opt = SGD(lr=INIT_LR)
@@ -144,8 +144,8 @@ print('binary fscore value', fscore[0])
 print('binary specificity value', specificity[0])
 #print(confusion_matrix(testY.round(), predictions))
 #print(classification_report(testY, predictions))
-dashList = [(5,2),(4,10),(3,3,2,2),(5,2,20,2)]
-# строим графики потерь и точности
+dashList = [(5, 2), (4, 10), (3, 3, 2, 2), (5, 2, 20, 2)]
+
 N = np.arange(0, EPOCHS)
 plt.style.use("ggplot")
 plt.figure()
