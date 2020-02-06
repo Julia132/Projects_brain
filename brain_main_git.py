@@ -13,11 +13,6 @@ positive_number = 98
 
 
 def selection(contours, img_name, shape, mypath_late, mypath_no):
-    hull = []
-    # for i in range(0, len(contours)):
-    #     hull.append(cv2.convexHull(contours[i], False))
-    #     cv2.drawContours(drawing, contours, i, 255, 1, 51, hierarchy)
-    #     closing = cv2.drawContours(drawing, hull, i, 100, 1, 8)
     mask = np.zeros(shape, np.uint8)
     for i in range(0, len(contours)):
         area = cv2.contourArea(contours[i])
@@ -86,7 +81,6 @@ def main():
 
 
         _, contours, hierarchy = cv2.findContours(closing, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        # drawing = np.zeros(closing.shape, np.uint8)
         selection(contours, onlyfiles[n], closing.shape, mypath_late, mypath_no)
     list_precision = []
     list_recall = []
@@ -125,7 +119,6 @@ def main():
     print('binary fscore value', Avg_fscore)
     print('binary specificity value', Avg_specificity)
     print('binary accuracy value', Agv_accuracy)
-
 
 
 if __name__=="__main__":
