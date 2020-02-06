@@ -1,19 +1,18 @@
-import cv2  # графический модуль opencv
-import numpy as np  # модуль операций над матрицами
+import cv2
+import numpy as np
+import csv
+import math
+
 from os import listdir  # список файлов в папке
 from os.path import isfile, join  # методы проверки файла и соединения с файлом
 from math import pi  # для константы pi
-import csv
-import math
-from scipy.stats import kurtosis
-from scipy.stats import skew
+
+#from scipy.stats import kurtosis
+#from scipy.stats import skew
 
 def dataset():
-    mypath_in = 'C:/Users/inet/Desktop/part_start'  #больные и здоровые в серых тонах
-    mypath_out = 'C:/Users/inet/Desktop/part_finish'    #200 здоровых в ручной обработке
-    mypath_no = 'C:/Users/inet/Desktop/no pathologies'  #здоровые по мнению кода
-    mypath_contour = 'C:/Users/inet/Desktop/contour'
-    mypath_late = 'C:/Users/inet/Desktop/part_start_late'  # результат обработки больных и здоровых вручную
+    mypath_in = 'C:/Users/inet/Desktop/part_start'
+    mypath_late = 'C:/Users/inet/Desktop/part_start_late'
     onlyfiles = [f for f in listdir(mypath_in) if isfile(join(mypath_in, f))]
     onlyfiles_out = [f for f in listdir(mypath_late) if isfile(join(mypath_late, f))]
     img = np.empty(len(onlyfiles_out), dtype=object)
